@@ -1,6 +1,7 @@
-package com.example.ativ.javaccom;
+﻿package com.example.ativ.javaccom;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.ContentProviderOperation;
@@ -17,14 +18,21 @@ import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import java.util.ArrayList;
 
 /**
  * Created by ATIV on 2017-06-19.
  */
-public class GpsManager extends Service implements LocationListener {
+@TargetApi(18)
+public class GpsManager implements LocationListener {
 
     private final Context mContext;
-
+    protected LocationManager locationManager;
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
     private boolean isGetLocattion = false;
@@ -36,17 +44,17 @@ public class GpsManager extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATE = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
 
-    protected LocationManager locationManager;
-
     public GpsManager (Context context) {
+        Log.d("GpsManager: ", "Constructor 진입");
         this.mContext = context;
+
         getLocation();
     }
 
     public Location getLocation () {
         try {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
+            locationManager = (LocationManager) mContext.getApplicationContext()
+                    .getSystemService(mContext.LOCATION_SERVICE);
             //GPS 정보 가져오기
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -148,12 +156,6 @@ public class GpsManager extends Service implements LocationListener {
                 });
 
         alertDialog.show();
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
     @Override

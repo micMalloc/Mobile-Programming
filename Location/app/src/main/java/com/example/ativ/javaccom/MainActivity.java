@@ -1,8 +1,6 @@
 ﻿package com.example.ativ.javaccom;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +13,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,41 +27,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         msg = (TextView) findViewById(R.id.infoWindow);
-
         showLocation = (Button) findViewById(R.id.locaButton);
+
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Toast.makeText(MainActivity.this, "권한 허가", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "권한 거부", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        new TedPermission(MainActivity.this)
+                .setPermissionListener(permissionListener)
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+                .check();
+
         showLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                PermissionListener permissionListener = new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        Toast.makeText(MainActivity.this, "권한 허가", Toast.LENGTH_SHORT).show();
-                        gps = new GpsManager(MainActivity.this);
-                        Log.d("GPS", "생성 직후");
-                        if (gps.isGetLocation()) {
-                            Log.d("GPS", "생성 성공");
-                            double longtitude = gps.getLongtitude();
-                            double latitude = gps.getLatitude();
+                gps = new GpsManager(MainActivity.this);
+                Log.d("GPS", "생성 직후");
+                if (gps.isGetLocation()) {
+                    Log.d("GPS", "생성 성공");
+                    double longtitude = gps.getLongtitude();
+                    double latitude = gps.getLatitude();
 
-                            msg.setText(String.valueOf(longtitude) + "\n"
-                                    + String.valueOf(latitude));
+                    msg.setText(String.valueOf(longtitude) + "\n"
+                            + String.valueOf(latitude));
 
-                        } else {
-                            gps.showSettingAlert();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                        Toast.makeText(MainActivity.this, "권한 거부", Toast.LENGTH_SHORT).show();
-                    }
-                };
-
-                new TedPermission(MainActivity.this)
-                        .setPermissionListener(permissionListener)
-                        .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        .check();
+                } else {
+                    gps.showSettingAlert();
+                }
             }
         });
 
