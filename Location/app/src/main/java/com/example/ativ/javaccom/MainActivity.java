@@ -56,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("GPS", "생성 성공");
                     double longtitude = gps.getLongtitude();
                     double latitude = gps.getLatitude();
+                    String cityName = gps.getCityName();
 
-                    msg.setText(String.valueOf(longtitude) + "\n"
-                            + String.valueOf(latitude));
+                    if (cityName != null) {
+                        msg.setText(String.valueOf(longtitude) + "\n"
+                                + String.valueOf(latitude) + "\n"
+                                + cityName);
+                    } else {
+                        msg.setText("ERROR");
+                    }
 
                 } else {
                     gps.showSettingAlert();

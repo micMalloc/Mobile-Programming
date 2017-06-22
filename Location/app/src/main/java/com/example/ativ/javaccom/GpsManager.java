@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,7 +25,10 @@ import android.widget.Toast;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ATIV on 2017-06-19.
@@ -37,7 +42,7 @@ public class GpsManager implements LocationListener {
     private boolean isNetworkEnabled = false;
     private boolean isGetLocattion = false;
 
-    private Location location;
+    private Location location = null;
     private double latitude;
     private double longitude;
 
@@ -106,6 +111,25 @@ public class GpsManager implements LocationListener {
             e.printStackTrace();
         }
         return location;
+    }
+
+    /* Get Current City Name by using Geocoder and Location */
+    public String getCityName () {
+        String cityName = null;
+        Geocoder gcd = new Geocoder(mContext, Locale.getDefault());
+        List<Address> addrList = null;
+
+        if (location != null) {
+            try {
+                addrList = gcd.getFromLocation(location.getLatitude(),
+                        location.getLongitude(), 1);
+                if (addrList.size() > 0) { // addrList != null
+                    cityName = addrList.get(0).getLocality();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } return cityName;
     }
 
     public void stopUsingGPS () {
