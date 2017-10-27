@@ -16,6 +16,6 @@ public class MyReceiver extends BroadcastReceiver {
         Log.d(TAG, "Receiver OnReceive");
 
         mAlamServiceIntent = new Intent(context, MyAlamService.class);
-        context.startService(intent);
+        context.startService(mAlamServiceIntent);
     }
 }
