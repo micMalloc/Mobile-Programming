@@ -28,8 +28,8 @@ public class MyAlamService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean isCancle = false;
         Log.d(TAG, "Service OnStartCommand");
-        /* ContentProvider : ÇÚµåÆù ¸®¼Ò½º Á¢±Ù */
-        //uri : º§¼Ò¸® ÁÖ¼Ò
+        /* ContentProvider : í•¸ë“œí° ë¦¬ì†ŒìŠ¤ ì ‘ê·¼ */
+        //uri : ë²¨ì†Œë¦¬ ì£¼ì†Œ
         //mMediaPlayer = MediaPlayer.create(this, R.raw.test);
         //mMediaPlayer.start();
         Uri uri = RingtoneManager.getActualDefaultRingtoneUri(
@@ -45,6 +45,8 @@ public class MyAlamService extends Service {
                 if (ringtone != null) {
                     ringtone.setStreamType(AudioManager.STREAM_ALARM);
                     ringtone.play();
+                    Intent shakeActivity = new Intent(this, ShakeActivity.class);
+                    startActivity(shakeActivity);
                     //Intent alamIntent = new Intent(this, AlamActivity.class);
                     //startActivity(alamIntent);
                 }
@@ -53,14 +55,13 @@ public class MyAlamService extends Service {
                 ringtone.stop();
             }
         }
-        //return START_STICKY : Á»ºñÃ³·³ µÇ»ì¾Æ³­´Ù.
-        return START_NOT_STICKY;
+        return START_STICKY; //: ì¢€ë¹„ì²˜ëŸ¼ ë˜ì‚´ì•„ë‚œë‹¤.
+        //return START_NOT_STICKY;
         //return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
     }
 }

@@ -5,12 +5,15 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,11 +24,18 @@ public class MainActivity extends AppCompatActivity {
     public Button unActiveBtn = null;
     public TimePicker timePicker = null;
     private int hour = -1, minute = -1;
+    public AlarmManager alarmManager = null;
+    public Intent intent = null;
+    public PendingIntent pendingIntent = null;
+    public Calendar calendar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent tmpIntent = new Intent(MainActivity.this, AlamActivity.class);
+        startActivity(tmpIntent);
 
         /* Connect View Components via findViewId method */
         onActiveBtn = (Button)findViewById(R.id.onActive);
@@ -45,39 +55,59 @@ public class MainActivity extends AppCompatActivity {
                     hour = timePicker.getCurrentHour();
                     minute = timePicker.getCurrentMinute();
                 } Log.d(TAG, "Input Time : " + hour + ":" + minute);
+                Toast.makeText(MainActivity.this, hour + ":" + minute, Toast.LENGTH_SHORT).show();
 
-                onActiveAlam(MainActivity.this, hour, minute);
+                onActiveAlam();
+                /*Intent intent = new Intent(MainActivity.this, ShakeActivity.class);
+                startActivity(intent);*/
+            }
+        });
+
+        unActiveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent msgForService = new Intent(MainActivity.this, MyAlamService.class);
+                intent = new Intent(ACTION);
+                alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                // Create a pendingIntent for AlamManager
+                pendingIntent = PendingIntent.getBroadcast(
+                        MainActivity.this,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+                alarmManager.cancel(pendingIntent);
+
+                msgForService.putExtra("cancle", true);
+                startService(msgForService);
             }
         });
     }
     /* Create a PendingIntent and Send it to AlamManager */
-    public void onActiveAlam (Context context, int crtHour, int crtMinute) {
+    public void onActiveAlam () {
         Log.d(TAG, "onActiveAlam Method");
-
-        AlarmManager alarmManager = null;
-        Intent intent = null;
-        PendingIntent pendingIntent = null;
-        Calendar calendar = null;
 
         // Create a intent for PendingIntent
         intent = new Intent(ACTION);
         // Create a pendingIntent for AlamManger
         pendingIntent = PendingIntent.getBroadcast(
-                context,
+                MainActivity.this,
                 0,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         // Create a Calendar Instant and Set the time to do something
         calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, crtHour);
-        calendar.set(Calendar.MINUTE, crtMinute);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         // Create a AlamManger Instant and Send the pendingIntent and calendar
         alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 
         if (Build.VERSION.SDK_INT >= 23) {
             Log.d(TAG, "SDK >= 23");
+            if (calendar.getTimeInMillis() < System.currentTimeMillis())
+                calendar.add(Calendar.DAY_OF_YEAR, 1);
             alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
