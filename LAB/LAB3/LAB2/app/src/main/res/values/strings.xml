@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">LectureReview</string>
+    <string name="cream"> Cream </string>
+    <string name="sugar"> Sugar </string>
+    <string name="coffee_adone"> What else in your coffee? </string>
+    <string name="pay"> Pay </string>
+    <string name="btnTxt"> BUTTON TEXT </string>
+    <string name="cof1"> Decaf </string>
+    <string name="cof2"> Expresso </string>
+    <string name="cof3"> Colombian </string>
+</resources>
