@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:stretchColumns="*">
+
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            android:layout_span="3"
+            android:gravity="center"
+            android:text="Shared Preference example" />
+    </TableRow>
+
+    <TableRow android:layout_marginTop="20dp">
+
+        <TextView android:text="학번" />
+
+        <EditText
+            android:id="@+id/si"
+            android:layout_span="2"
+            android:hint="..." />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="이름"/>
+        <EditText android:id="@+id/sn"
+            android:layout_span="2"
+            android:hint="..."
+            />
+    </TableRow>
+    <TableRow>
+        <Button android:id="@+id/readBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="불러오기" />
+        <Button android:id="@+id/saveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저장하기" />
+        <Button
+            android:id="@+id/initBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="초기화" />
+    </TableRow>
+</TableLayout>
